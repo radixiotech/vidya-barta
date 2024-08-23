@@ -18,3 +18,10 @@ deps-cleancache:
 
 list:
 	go list -mod=mod all
+
+# Run Locally
+build-vb-api:
+	@go build -o bin/vb-api apps/vb-api/main.go
+
+run-vb-api: build-vb-api
+	@bin/vb-api

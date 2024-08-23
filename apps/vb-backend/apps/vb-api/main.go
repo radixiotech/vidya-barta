@@ -12,7 +12,7 @@ import (
 
 func main() {
 	if err := run(); err != nil {
-		fmt.Printf("Error :%v", err)
+		fmt.Printf("Error :%v\n", err)
 		os.Exit(1)
 	}
 }
@@ -35,7 +35,7 @@ func run() error {
 		return fmt.Errorf("server error: %w", err)
 
 	case sig := <-shutdown:
-		fmt.Printf("Shutting down server with signal : %+v", sig)
+		fmt.Printf("Shutting down server with signal : %+v\n", sig)
 		defer fmt.Printf("Shutdown complete with signal : %+v", sig)
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
