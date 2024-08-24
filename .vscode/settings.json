@@ -8,6 +8,14 @@
   "[go]": {
     "editor.defaultFormatter": "golang.go"
   },
-  "cSpell.words": ["barta", "clsx", "lucide", "tseslint", "Turborepo", "vidya"],
+  "cSpell.words": [
+    "barta",
+    "clsx",
+    "lucide",
+    "radixiotech",
+    "tseslint",
+    "Turborepo",
+    "vidya"
+  ],
   "css.customData": [".vscode/tailwind.json"]
 }
