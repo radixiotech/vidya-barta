@@ -1,10 +1,7 @@
-import { Button } from '@vidya-barta/ui';
-
 function App() {
   return (
-    <div>
+    <div className="h-screen flex flex-col justify-center items-center">
       <h1>Vidya Barta</h1>
-      <Button>Hello</Button>
     </div>
   );
 }
