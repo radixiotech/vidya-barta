@@ -18,6 +18,7 @@ func main() {
 }
 
 func run() error {
+	// Graceful shutdown
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
 
