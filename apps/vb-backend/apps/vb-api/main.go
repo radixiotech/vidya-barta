@@ -6,27 +6,41 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
+
+	"github.com/radixiotech/vidya-barta/foundation/logger"
+	"go.uber.org/zap"
 )
 
 func main() {
-	if err := run(); err != nil {
-		fmt.Printf("Error :%v\n", err)
+	log := logger.New("Vidya Barta Backend")
+	defer log.Sync()
+
+	if err := run(log); err != nil {
+		log.Error("Startup", "Error", err)
+		log.Sync()
 		os.Exit(1)
 	}
 }
 
-func run() error {
-	// Graceful shutdown
+func run(log *zap.SugaredLogger) error {
+	// GOMAXPROCS
+	log.Infow("Startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
+
+	// Graceful Shutdown
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
 
-	api := http.Server{}
+	api := http.Server{
+		ErrorLog: zap.NewStdLog(log.Desugar()),
+	}
+
 	serverErrors := make(chan error, 1)
 
 	go func() {
-		fmt.Printf("Server listening on %s", api.Addr)
+		log.Infow("Server listening", "address", api.Addr)
 		serverErrors <- api.ListenAndServe()
 	}()
 
@@ -36,8 +50,8 @@ func run() error {
 		return fmt.Errorf("server error: %w", err)
 
 	case sig := <-shutdown:
-		fmt.Printf("Shutting down server with signal : %+v\n", sig)
-		defer fmt.Printf("Shutdown complete with signal : %+v", sig)
+		log.Infow("Shutting down server", "signal", sig)
+		defer log.Infow("Shutdown complete", "signal", sig)
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 		defer cancel()
