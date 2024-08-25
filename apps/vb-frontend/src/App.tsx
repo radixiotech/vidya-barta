@@ -5,7 +5,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@vidya-barta/ui';
 import { useState } from 'react';
 
@@ -15,9 +14,7 @@ function App() {
   return (
     <div className="h-screen flex flex-col justify-center items-center">
       <Dialog open={open} defaultOpen={open} onOpenChange={setOpen}>
-        <DialogTrigger>
-          <Button onClick={() => setOpen(true)}>Open Dialog</Button>
-        </DialogTrigger>
+        <Button onClick={() => setOpen(true)}>Open Dialog</Button>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
