@@ -1,23 +1,23 @@
 # Modules support
 deps-reset:
-	git checkout -- go.mod
-	go mod tidy
+	@git checkout -- go.mod
+	@go mod tidy
 
 tidy:
-	go mod tidy
+	@go mod tidy
 
 deps-list:
-	go list -m -u -mod=readonly all
+	@go list -m -u -mod=readonly all
 
 deps-upgrade:
-	go get -u -v ./...
-	go mod tidy
+	@go get -u -v ./...
+	@go mod tidy
 
 deps-cleancache:
-	go clean -modcache
+	@go clean -modcache
 
 list:
-	go list -mod=mod all
+	@go list -mod=mod all
 
 # Run Locally
 build-vb-api:
