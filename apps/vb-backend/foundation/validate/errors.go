@@ -45,7 +45,7 @@ func (fe FieldErrors) Fields() map[string]string {
 // IsFieldErrors checks if an error of type FieldErrors exists.
 func IsFieldErrors(err error) bool {
 	var fe FieldErrors
-	return errors.Is(err, &fe)
+	return errors.As(err, &fe)
 }
 
 // GetFieldErrors returns a copy of the FieldErrors pointer.
