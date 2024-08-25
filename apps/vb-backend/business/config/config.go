@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type web struct {
+type Web struct {
 	APIHost         string
 	ReadTimeout     time.Duration
 	WriteTimeout    time.Duration
@@ -12,11 +12,11 @@ type web struct {
 	ShutdownTimeout time.Duration
 }
 
-type auth struct {
+type Auth struct {
 	Issuer string
 }
 
-type db struct {
+type DB struct {
 	MaxIdleConns int
 	MaxOpenConns int
 	DisableTLS   bool
@@ -27,7 +27,7 @@ type db struct {
 }
 
 type VBApiConfig struct {
-	DB   db
-	Web  web
-	Auth auth
+	DB   DB
+	Web  Web
+	Auth Auth
 }
