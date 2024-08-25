@@ -40,19 +40,15 @@ func init() {
 // Check validates the provided model against it's declared tags.
 func Check(val any) error {
 	if err := validate.Struct(val); err != nil {
-		// Use a type assertion to get the real error value.
 		vErrors, ok := err.(validator.ValidationErrors)
 		if !ok {
 			return err
 		}
 
-		var fields FieldErrors
-		for _, vError := range vErrors {
-			field := FieldError{
-				Field: vError.Field(),
-				Err:   vError.Translate(translator),
-			}
-			fields = append(fields, field)
+		fields := make(FieldErrors, len(vErrors))
+		for i, vError := range vErrors {
+			field := FieldError{Field: vError.Field(), Err: vError.Translate(translator)}
+			fields[i] = field
 		}
 
 		return fields
