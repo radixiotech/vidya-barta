@@ -19,11 +19,11 @@ func (h *Handler) Query(w http.ResponseWriter, r *http.Request) {
 	if random < 50 {
 		web.Respond(
 			w,
-			web.Fail(web.ErrorResponse{Message: http.StatusText(http.StatusInternalServerError)}),
 			http.StatusInternalServerError,
+			web.Fail(web.ErrorResponse{Message: http.StatusText(http.StatusInternalServerError)}),
 		)
 		return
 	}
 
-	web.Respond(w, web.Success(http.StatusText(http.StatusOK)), http.StatusOK)
+	web.Respond(w, http.StatusOK, web.Success(http.StatusText(http.StatusOK)))
 }
