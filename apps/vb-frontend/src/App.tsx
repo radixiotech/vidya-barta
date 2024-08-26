@@ -1,30 +1,20 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@vidya-barta/ui';
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Button } from '@vidya-barta/ui';
+import { BASE_URL, extractAPIError, fetcher } from './lib/fetcher';
 
 function App() {
-  const [open, setOpen] = useState(false);
+  const { error, refetch } = useQuery({
+    retry: 0,
+    queryKey: ['users'],
+    queryFn: ({ signal }) => fetcher(`${BASE_URL}/users`, { signal }),
+  });
+
+  const apiError = extractAPIError(error);
+  console.log(apiError);
 
   return (
     <div className="h-screen flex flex-col justify-center items-center">
-      <Dialog open={open} defaultOpen={open} onOpenChange={setOpen}>
-        <Button onClick={() => setOpen(true)}>Open Dialog</Button>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <Button onClick={() => refetch()}>Refetch</Button>
     </div>
   );
 }
