@@ -31,3 +31,7 @@ type VBApiConfig struct {
 	Web  Web
 	Auth Auth
 }
+
+func New() *VBApiConfig {
+	return &VBApiConfig{}
+}
