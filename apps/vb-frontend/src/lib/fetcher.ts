@@ -4,6 +4,9 @@ import {
   ApiStatus,
   ApplicationError,
 } from '@/types/response';
+import { env } from './config';
+
+export const BASE_URL = env.VB_BACKEND_URL + '/api/v1';
 
 class AppError extends Error {
   statusCode: number;

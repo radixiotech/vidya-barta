@@ -20,5 +20,8 @@
     "apps/*",
     "packages/*",
     "packages/ui/*"
-  ]
+  ],
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
 }
