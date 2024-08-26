@@ -1,12 +1,12 @@
 import {
   APIError,
+  APIErrorResponse,
   APIResponse,
   ApiStatus,
   ApplicationError,
 } from '@/types/response';
-import { env } from './config';
-
-export const BASE_URL = env.VB_BACKEND_URL + '/api/v1';
+import { AxiosError, AxiosRequestConfig, isAxiosError } from 'axios';
+import { api } from './http';
 
 class AppError extends Error {
   statusCode: number;
@@ -34,16 +34,30 @@ export const extractAPIError = (error: unknown): ApplicationError | null => {
   return { message: 'Internal Server Error', statusCode: 500 };
 };
 
-export async function fetcher<TData = unknown>(
-  input: string | URL | globalThis.Request,
-  init?: RequestInit
+export async function fetcher<TData = unknown, TBody = unknown>(
+  config: AxiosRequestConfig<TBody>
 ): Promise<TData> {
-  const response = await fetch(input, init);
-  const data = (await response.json()) as APIResponse<{ data: TData }>;
+  try {
+    const response = await api<APIResponse<{ data: TData }>>(config);
+    const data = response.data;
 
-  if (data.status === ApiStatus.OK) {
-    return data.data;
+    if (data.status === ApiStatus.OK) {
+      return data.data;
+    }
+
+    throw new AppError({ ...data.error, statusCode: response.status });
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const e = error as AxiosError<APIErrorResponse<{ error: APIError }>>;
+
+      const statusCode = e.response?.status || 500;
+      const fields = e.response?.data?.error.fields || {};
+      const message =
+        e.response?.data?.error.message || 'Internal Server Error';
+
+      throw new AppError({ message, statusCode, fields });
+    }
+
+    throw new AppError({ message: 'Internal Server Error', statusCode: 500 });
   }
-
-  throw new AppError({ ...data.error, statusCode: response.status });
 }

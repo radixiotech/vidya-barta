@@ -6,11 +6,14 @@ import './index.css';
 
 import App from './App.tsx';
 import { queryClient } from './lib/query-client.ts';
+import RevalidateTokenProvider from './providers/revalidate-token-provider.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <RevalidateTokenProvider>
+        <App />
+      </RevalidateTokenProvider>
     </QueryClientProvider>
   </StrictMode>
 );

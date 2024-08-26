@@ -13,7 +13,7 @@ const (
 )
 
 // Respond converts a Go value to JSON and sends it to the client.
-func Respond(w http.ResponseWriter, data any, statusCode int) error {
+func Respond(w http.ResponseWriter, statusCode int, data any) error {
 	if statusCode == http.StatusNoContent {
 		w.WriteHeader(statusCode)
 		return nil
