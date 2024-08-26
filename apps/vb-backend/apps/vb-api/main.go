@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"runtime"
 	"syscall"
-	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/radixiotech/vidya-barta/apps/vb-api/handlers"
 	"github.com/radixiotech/vidya-barta/business/config"
 	"github.com/radixiotech/vidya-barta/foundation/logger"
@@ -17,6 +17,9 @@ import (
 )
 
 func main() {
+	// Load envs.
+	godotenv.Load()
+
 	log := logger.New("Vidya Barta Backend")
 	defer log.Sync()
 
@@ -32,7 +35,8 @@ func run(log *zap.SugaredLogger) error {
 	log.Infow("Startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
 
 	// Initialize Config
-	cfg := config.New()
+	cfg := config.NewVBConfig()
+	log.Infow("Config", "config", cfg)
 
 	// Graceful Shutdown
 	shutdown := make(chan os.Signal, 1)
@@ -42,9 +46,8 @@ func run(log *zap.SugaredLogger) error {
 	mux := handlers.APIMux(handlers.APIHandlersConfig{Shutdown: shutdown, Log: log, Config: cfg})
 
 	api := http.Server{
-		Handler: mux,
-		// Addr:         cfg.Web.APIHost,
-		Addr:         "localhost:3000",
+		Handler:      mux,
+		Addr:         cfg.Web.APIHost,
 		ReadTimeout:  cfg.Web.ReadTimeout,
 		IdleTimeout:  cfg.Web.IdleTimeout,
 		WriteTimeout: cfg.Web.WriteTimeout,
@@ -67,7 +70,7 @@ func run(log *zap.SugaredLogger) error {
 		log.Infow("Shutting Down Server", "signal", sig)
 		defer log.Infow("Shutdown Complete", "signal", sig)
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.Web.ShutdownTimeout)
 		defer cancel()
 
 		if err := api.Shutdown(ctx); err != nil {
