@@ -34,6 +34,26 @@ type VBApiConfig struct {
 }
 
 func NewVBConfig() *VBApiConfig {
+	webReadTimeOut, err := time.ParseDuration(GetEnvString("WEB_READ_TIMEOUT", "5s"))
+	if err != nil {
+		webReadTimeOut = time.Second * 5
+	}
+
+	webIdleTimeout, err := time.ParseDuration(GetEnvString("WEB_IDLE_TIMEOUT", "120s"))
+	if err != nil {
+		webIdleTimeout = time.Second * 120
+	}
+
+	webWriteTimeout, err := time.ParseDuration(GetEnvString("WEB_WRITE_TIMEOUT", "10s"))
+	if err != nil {
+		webWriteTimeout = time.Second * 10
+	}
+
+	webShutdownTimeout, err := time.ParseDuration(GetEnvString("WEB_WRITE_TIMEOUT", "20s"))
+	if err != nil {
+		webShutdownTimeout = time.Second * 20
+	}
+
 	return &VBApiConfig{
 		DB: DB{
 			MaxIdleConns: GetEnvInt("DB_MAX_IDLE_CONN", 5),
@@ -45,11 +65,11 @@ func NewVBConfig() *VBApiConfig {
 			DisableTLS:   GetEnvString("DB_TLS", "disable") == "disable",
 		},
 		Web: Web{
+			ReadTimeout:     webReadTimeOut,
+			IdleTimeout:     webIdleTimeout,
+			WriteTimeout:    webWriteTimeout,
+			ShutdownTimeout: webShutdownTimeout,
 			APIHost:         GetEnvString("WEB_API_HOST", "localhost:3000"),
-			ReadTimeout:     time.Duration(GetEnvInt("WEB_READ_TIMEOUT", int(time.Second*5))),
-			IdleTimeout:     time.Duration(GetEnvInt("WEB_IDLE_TIMEOUT", int(time.Second*120))),
-			WriteTimeout:    time.Duration(GetEnvInt("WEB_WRITE_TIMEOUT", int(time.Second*10))),
-			ShutdownTimeout: time.Duration(GetEnvInt("WEB_SHUTDOWN_TIMEOUT", int(time.Second*20))),
 		},
 		Auth: Auth{
 			Issuer: GetEnvString("AUTH_ISSUER", "vidya-barta-backend"),
