@@ -12,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/radixiotech/vidya-barta/apps/vb-api/handlers"
 	"github.com/radixiotech/vidya-barta/business/config"
+	"github.com/radixiotech/vidya-barta/business/database"
 	"github.com/radixiotech/vidya-barta/foundation/logger"
 	"go.uber.org/zap"
 )
@@ -38,12 +39,25 @@ func run(log *zap.SugaredLogger) error {
 	cfg := config.NewVBConfig()
 	log.Infow("Config", "config", cfg)
 
-	// Graceful Shutdown
+	// Initialize Database
+	db, err := database.Open(cfg.DB)
+	if err != nil {
+		log.Infow("DATABASE ERROR", "error", err)
+		return err
+	}
+
+	err = database.StatusCheck(context.Background(), db)
+	if err != nil {
+		log.Infow("DATABASE Status Check Error", "error", err)
+		return err
+	}
+
+	// Shutdown Signals
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
 
 	// Initialize API support
-	mux := handlers.APIMux(handlers.APIHandlersConfig{Shutdown: shutdown, Log: log, Config: cfg})
+	mux := handlers.APIMux(handlers.APIHandlersConfig{Shutdown: shutdown, Log: log, Config: cfg, DB: db})
 
 	api := http.Server{
 		Handler:      mux,
@@ -61,7 +75,7 @@ func run(log *zap.SugaredLogger) error {
 		serverErrors <- api.ListenAndServe()
 	}()
 
-	// Shutdown Server
+	// Graceful Shutdown of Server
 	select {
 	case err := <-serverErrors:
 		return fmt.Errorf("server error: %w", err)
