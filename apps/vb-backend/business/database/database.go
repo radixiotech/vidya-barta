@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/radixiotech/vidya-barta/business/config"
 )
 
@@ -26,7 +27,7 @@ func Open(cfg config.DB) (*sqlx.DB, error) {
 		User:     url.UserPassword(cfg.User, cfg.Password),
 	}
 
-	db, err := sqlx.Open("pgx", u.String())
+	db, err := sqlx.Open("postgres", u.String())
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +35,7 @@ func Open(cfg config.DB) (*sqlx.DB, error) {
 	db.SetMaxIdleConns(cfg.MaxIdleConns)
 	db.SetMaxOpenConns(cfg.MaxOpenConns)
 
-	return nil, nil
+	return db, nil
 }
 
 // StatusCheck returns nil if it can successfully talk to the database. It

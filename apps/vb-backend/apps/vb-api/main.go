@@ -41,7 +41,7 @@ func run(log *zap.SugaredLogger) error {
 
 	// Initialize Database
 	db, err := database.Open(cfg.DB)
-	if err == nil {
+	if err != nil {
 		log.Infow("DATABASE ERROR", "error", err)
 		return err
 	}
