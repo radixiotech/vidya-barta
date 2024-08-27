@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/go-chi/cors"
+	"github.com/jmoiron/sqlx"
 	v1 "github.com/radixiotech/vidya-barta/apps/vb-api/handlers/v1"
 	"github.com/radixiotech/vidya-barta/business/config"
 	"github.com/radixiotech/vidya-barta/foundation/web"
@@ -12,6 +13,7 @@ import (
 )
 
 type APIHandlersConfig struct {
+	DB       *sqlx.DB
 	Shutdown chan os.Signal
 	Log      *zap.SugaredLogger
 	Config   *config.VBApiConfig
