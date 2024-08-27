@@ -1,0 +1,6 @@
+bin/
+zarf/
+Makefile
+.gitignore
+.env.example
+.dockerignore
