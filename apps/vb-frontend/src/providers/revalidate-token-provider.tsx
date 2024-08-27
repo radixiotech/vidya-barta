@@ -17,7 +17,10 @@ const RevalidateTokenProvider = ({ children }: PropsWithChildren) => {
     api.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        if (error.response && error.response.status !== 401) {
+        if (
+          error.code === 'ERR_NETWORK' ||
+          (error.response && error.response.status !== 401)
+        ) {
           return Promise.reject(error);
         }
 
