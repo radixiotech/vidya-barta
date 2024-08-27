@@ -1,6 +1,8 @@
 {
   "recommendations": [
-    "esbenp.prettier-vscode", // prettier plugin
-    "dbaeumer.vscode-eslint" // eslint plugin
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "streetsidesoftware.code-spell-checker"
   ]
 }
